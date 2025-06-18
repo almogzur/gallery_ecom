@@ -2,8 +2,8 @@
 /*  
   !!!!!! next auth mongo adapted  useing this db connection 
 
- this paet is used in the use auth only !!!
- Users app data is ussing Mongoose
+ this model is used in the use auth only !!!
+ Users app data is using Mongoose
  This approach is taken from https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
 */
 

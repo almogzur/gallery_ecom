@@ -1,9 +1,9 @@
 import CoreImage from "@/components/core_image"
 import ImagesGrid from "@/components/images_grid"
-import { Box } from "@mui/material"
+import { Box, useMediaQuery, useTheme } from "@mui/material"
 import { p1, p3 , p4  } from "@/util/constants"
-import WidthContext from "@/context/width_context"
-import { useContext, useEffect, useState } from "react"
+
+import {   useEffect, useState } from "react"
 
 type TilesPropsType = {
     children?: React.ReactNode
@@ -11,9 +11,12 @@ type TilesPropsType = {
 
 export default function Tiles({ }: TilesPropsType) {
 
-    const { sm } = useContext(WidthContext)
+
+    const theme = useTheme()
     const [pageLoaded, setPageLoaded] = useState(false)
-    const [width] = useState('100%')
+
+
+    const getWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 0 : '60%'
 
     useEffect(() => {
         setPageLoaded(true)
@@ -26,7 +29,7 @@ export default function Tiles({ }: TilesPropsType) {
     return (
         <Box
             sx={{
-                width: width,
+                width: '100%',
                 height:'30dvh',
                 mt: 1,
                 
@@ -39,7 +42,7 @@ export default function Tiles({ }: TilesPropsType) {
                 src={p1.src}
                 styles={{
                     height: 'inherit',
-                    width: !sm ? 0 : '60%',
+                    width: getWidth,
                     float: 'right',
                 }}
 

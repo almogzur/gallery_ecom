@@ -41,11 +41,11 @@ export default function SingInPage() {
                     <InputWrap
                         label={"מייל"}
                         value={user.email}
-                        onChangeHndler={(e) => { 
+                        onChangeHandler={(e) => { 
                          setUser({  email: e.target.value })
                         }}
                         helpText={undefined}
-                        labelPositioin={"top"}
+                        labelPosition={"top"}
                         variant={"outlined"}
                         isLabelBold
                         isValueBold

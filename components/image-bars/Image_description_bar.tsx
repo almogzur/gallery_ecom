@@ -2,7 +2,7 @@ import { Button, Typography, Stack  as Flex} from "@mui/material";
 import { FaInfoCircle } from "react-icons/fa";
 import { CiShare2 } from "react-icons/ci";
 
-export default  function ImageDisciptionBar () {
+export default  function ImageDescriptionBar () {
 
 
 return (

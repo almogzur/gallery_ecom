@@ -1,26 +1,24 @@
-import WidthContext from "@/context/width_context"
 import { SxProps, Typography, useFormControl ,useTheme} from "@mui/material"
-import { CSSProperties, useContext } from "react"
+import { CSSProperties } from "react"
 
-interface ControledLabelType {
-    labelPositioin:"top"|"end"
+interface ControlledLabelType {
+    labelPosition:"top"|"end"
     label:string
     isLabelBold?:boolean
-    labelTextcolor?:CSSProperties['color']
+    labelTextColor?:CSSProperties['color']
     sxProps?:SxProps
 
 
 }
- const ControledLabel =({
-   labelPositioin,
+ const ControlledLabel =({
+   labelPosition,
    label ,
    isLabelBold  ,
-   labelTextcolor,
+   labelTextColor,
    sxProps
 
-  }:ControledLabelType)=>{
+  }:ControlledLabelType)=>{
     const theme = useTheme()
-    const {sm} = useContext(WidthContext)
 
     const { focused , filled, variant ,error,color } = useFormControl() || {};
   //  console.log(rest);
@@ -33,7 +31,7 @@ interface ControledLabelType {
     
             focused?
                 [ {   
-                 width:labelPositioin==="end"? fullWidth*0.11 : fullWidth,
+                 width:labelPosition==="end"? fullWidth*0.11 : fullWidth,
                  color:error? "red" : color?theme.palette[`${color}`].main : null,
 
                  fontWeight: isLabelBold? "bold": null,
@@ -42,7 +40,7 @@ interface ControledLabelType {
                  variant==="outlined"&&
                   {
                    position:"relative",
-                   top:!sm ?3:3, 
+                   top:!theme.breakpoints.up('sm') ?3:3, 
                    p:1
                  },
                  {
@@ -53,7 +51,7 @@ interface ControledLabelType {
              filled ?
                  [
                  {
-                  width:labelPositioin==="end"? fullWidth*0.11 : fullWidth,
+                  width:labelPosition==="end"? fullWidth*0.11 : fullWidth,
                   color:error? "red":undefined,
                   fontWeight: isLabelBold? "bold": null,
 
@@ -61,22 +59,22 @@ interface ControledLabelType {
                  variant==="outlined"&&
                  {
                   position:"relative",
-                   top: !sm ? 3 : 3, 
+                   top: !theme.breakpoints.up('sm') ? 3 : 3, 
                   p:1
                 }
                ,{
               
-                fontSize:!sm? 14:18,
+                fontSize:!theme.breakpoints.up('sm')? 14:18,
               }
                 ]      
                 :
                 {
                  width:fullWidth,
                  fontWeight: isLabelBold? "bold": null,
-                 fontSize:!sm? 14:18,
+                 fontSize:!theme.breakpoints.up('sm')? 14:18,
                  position:"relative",
                  opacity:1,
-                 color:labelTextcolor?? null,
+                 color:labelTextColor?? null,
                   ...sxProps,
                   mr:5
                  }
@@ -91,5 +89,5 @@ interface ControledLabelType {
 
 }
 
-export default ControledLabel
+export default ControlledLabel
 

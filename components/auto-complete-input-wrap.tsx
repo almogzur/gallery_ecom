@@ -1,22 +1,22 @@
 import { Autocomplete, MenuItem, SxProps, TextField } from "@mui/material";
-import ControledLabel from '@/components/mui-input-wrap/controled-form-label'
-import ControledHelperText from '@/components/mui-input-wrap/controled-helper-text'
+import ControlledLabel from '@/components/mui-input-wrap/controlled-form-label'
+import ControlledHelperText from '@/components/mui-input-wrap/controlled-form-label'
 import { InputWrapPropsType } from '@/components/mui-input-wrap/input-wrap'
 
 
-interface AutoCompliteInputWrapPropsType extends Omit<InputWrapPropsType, 'multiline'> {
+interface AutoCompleteInputWrapPropsType extends Omit<InputWrapPropsType, 'multiline'> {
 
   AutocompleteOptionArray: string[]
   textFiledSxProps?:SxProps
-  controledLabelSxcProps?:SxProps
+  controlledLabelSxcProps?:SxProps
 }
 
-export default function AutoCompliteInputWrap({
+export default function AutoCompleteInputWrap({
   AutocompleteOptionArray,
   inputType,
   label,
   value,
-  onChangeHndler,
+  onChangeHandler,
   isRequired,
   stateName,
   variant,
@@ -24,15 +24,14 @@ export default function AutoCompliteInputWrap({
   bg,
   m,
   helpText,
-  helpTextPotionsEnd,
   isDisabled,
   hoverColor,
-  labelPositioin,
+  labelPosition,
   sxProps,
   textFiledSxProps,
-  controledLabelSxcProps
+  controlledLabelSxcProps
 
-}: AutoCompliteInputWrapPropsType) {
+}: AutoCompleteInputWrapPropsType) {
   return (
     <Autocomplete
       slotProps={{ listbox: {}  }}
@@ -66,19 +65,19 @@ export default function AutoCompliteInputWrap({
             },
           }}
           id={label}
-          type={inputType} //defult to text
+          type={inputType} //default to text
           value={value ?? ""}
-          onChange={onChangeHndler}
+          onChange={onChangeHandler}
           required={isRequired}
           disabled={isDisabled}
           name={stateName}
-          helperText={helpText && <ControledHelperText text={helpText} helpTextPotionsEnd={helpTextPotionsEnd ?? false} />}
+          helperText={helpText && <ControlledHelperText label={helpText} labelPosition={"top"}  />}
           variant={variant ?? 'standard'}
           label={
-          <ControledLabel 
-          labelPositioin={labelPositioin} 
+          <ControlledLabel 
+          labelPosition={labelPosition} 
           label={label}
-          sxProps={controledLabelSxcProps}
+          sxProps={controlledLabelSxcProps}
           isLabelBold
 
            />}

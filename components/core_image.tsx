@@ -9,7 +9,7 @@ type CoreImagePropsType = {
     width: number
     src: string
     alt?: string
-    discription?: string
+    description?: string
     styles?:CSSProperties,
     animation?:AnimationProps
 }
@@ -29,8 +29,8 @@ export default function CoreImage(props: CoreImagePropsType) {
             }}
             
          />
-         {props.discription??
-          <Typography>{props.discription}</Typography>
+         {props.description??
+          <Typography>{props.description}</Typography>
          }
          </>
     )

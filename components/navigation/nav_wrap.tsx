@@ -11,13 +11,12 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useSession } from 'next-auth/react';
-import width_context from '../../context/width_context';
 import LoadingFallBack from '../loading-fallback';
 import { signOut } from 'next-auth/react'
 import Link from 'next/link';
 import ImageUploader from '@/util/cloudinary/front/image-uploader';
 import { useTheme } from '@mui/material';
-
+import UnknownUserPng from '@/public/unknown_user.jpg'
 
 
 type PageKeyType = {
@@ -46,7 +45,6 @@ type ResponsiveAppBarPropsType = {
 function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
 
   const { data: session, status } = useSession()
-  const { lg, xxs } = React.useContext(width_context)
   const theme = useTheme()
 
   const [pageLoaded, setPageLoaded] = React.useState(false)
@@ -68,7 +66,7 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
 
   const UserSettingsBox = Box,
     PagesBox = Box,
-    BurgerManuBox = Box
+    BurgerMenuBox = Box
 
 
   React.useEffect(() => {
@@ -91,14 +89,14 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
       <Toolbar
         sx={{ ...props.Toll_bar_Styles }}
       >
-        {xxs && !lg &&
-          <BurgerManuBox
+        {theme.breakpoints.up('lg') &&
+          <BurgerMenuBox
             display={'flex'}
           >
             <IconButton
               size='large'
               aria-label="account of current user"
-              aria-controls="menu-appbar"
+              aria-controls="menu-appBar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
@@ -108,7 +106,7 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
             </IconButton>
 
             <Menu
-              id="menu-appbar"
+              id="menu-appBar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
@@ -140,7 +138,7 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
               )}
             </Menu>
 
-          </BurgerManuBox>
+          </BurgerMenuBox>
          }
 
         <PagesBox
@@ -172,12 +170,12 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
 
               <Tooltip title={session?.user?.email}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy_Sharp" src={session?.user?.image?? UnknownUserPng.src } />
                 </IconButton>
               </Tooltip>
                 <Menu
                 sx={{ mt: '45px' }}
-                id="menu-appbar"
+                id="menu-appBar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
                   vertical: 'top',
@@ -191,9 +189,8 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem disableGutters sx={{display:'flex',justifyContent:'center'}} >
-                  <ImageUploader/>
-                </MenuItem>
+     
+
                 {ProfileLinks.map((setting) => (
                   
                     <MenuItem key={setting.label} onClick={handleCloseUserMenu}>
@@ -207,6 +204,11 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
 
                   
                 ))}
+
+                 <MenuItem disableGutters sx={{display:'flex',justifyContent:'center'}} >
+                  <ImageUploader/>
+                </MenuItem>
+                
                 <MenuItem
                   onClick={() => signOut()}
                 >
@@ -230,7 +232,7 @@ function ResponsiveAppBar(props: ResponsiveAppBarPropsType) {
                   fontSize:'1.2em',
                   fontWeight:'bold'
                 }}
-            >התחברות
+            >התחבר
             </Button>
         }
 

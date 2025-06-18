@@ -3,8 +3,8 @@ import { DateTimeValidationError, PickerChangeHandlerContext, TimePicker } from 
 import dayjs from "dayjs"
 import { TextFieldVariants, useTheme, TextFieldProps } from "@mui/material"
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
-import ControledHelperText from "@/components/mui-input-wrap/controled-helper-text"
-import ControledLabel from "@/components/mui-input-wrap/controled-form-label"
+import ControlledHelperText from "@/components/mui-input-wrap/controlled-helper-text"
+import ControlledLabel from "@/components/mui-input-wrap/controlled-form-label"
 
 interface TimePickerWrapType {
     label: string
@@ -12,11 +12,11 @@ interface TimePickerWrapType {
     value: string | null
     minDate?: Date
     maxTIme?: Date
-    isEroor?: boolean
-    onAcceptHendler?: (value: dayjs.Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void
-    onChangeHendler?: (value: dayjs.Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void
-    onEroorHndler: (e: DateTimeValidationError, context: dayjs.Dayjs | null) => void
-    labelPositioin: "top" | "end"
+    isError?: boolean
+    onAcceptHandler?: (value: dayjs.Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void
+    onChangeHandler?: (value: dayjs.Dayjs | null, context: PickerChangeHandlerContext<DateTimeValidationError>) => void
+    onErrorHandler: (e: DateTimeValidationError, context: dayjs.Dayjs | null) => void
+    labelPosition: "top" | "end"
     MediaQuery?: string
     color?: TextFieldProps['color']
     helpText?: string,
@@ -26,16 +26,16 @@ interface TimePickerWrapType {
 
 const TimePickerWrap = ({
     label,
-    labelPositioin,
+    labelPosition,
     variant,
     value,
     MediaQuery,
     color,
     helpText,
     helpTextPotionsEnd,
-    onAcceptHendler,
-    onEroorHndler,
-    onChangeHendler,
+    onAcceptHandler,
+    onChangeHandler,
+    onErrorHandler,
     ...restPros
 }: TimePickerWrapType) => {
 
@@ -51,16 +51,16 @@ const TimePickerWrap = ({
             desktopModeMediaQuery={MediaQuery ?? theme.breakpoints.up("md")}
             value={value ? dayjs(value, 'HH:mm') : null}
             closeOnSelect={false}
-            // tryed not working curenntly
+            // tried not working currently
             // minTime ={}
             // minDateTime={} 
             // maxDate={} 
             // maxTime ={}
-            onError={onEroorHndler}
-            label={<ControledLabel labelPositioin={labelPositioin} label={label} />}
+            onError={onErrorHandler}
+            label={<ControlledLabel labelPosition={labelPosition} label={label} />}
             sx={{ m: 0.5 }}
-            onAccept={onAcceptHendler}
-            onChange={onChangeHendler}
+            onAccept={onAcceptHandler}
+            onChange={onChangeHandler}
             viewRenderers={{
                 hours: renderTimeViewClock,
                 minutes: renderTimeViewClock,
@@ -69,7 +69,12 @@ const TimePickerWrap = ({
                 textField: {
                     variant: variant ?? "outlined",
                     color: color,
-                    helperText: helpText ? <ControledHelperText text={helpText} helpTextPotionsEnd={helpTextPotionsEnd ?? false} /> : undefined
+                    helperText: helpText ? 
+                        <ControlledHelperText 
+                            text={helpText}
+                            helpTextPotionsEnd={helpTextPotionsEnd ?? false}
+                             />
+                         : undefined
                 }
             }}
         />

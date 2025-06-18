@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
     const [] = useState({})
 
-    const ProfileAvatrBox = Box
+    const ProfileAvatarBox = Box
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -44,7 +44,7 @@ export default function ProfilePage() {
                         mt={2}
 
                     >
-                        <ProfileAvatrBox >
+                        <ProfileAvatarBox >
                             <Image
                                 alt={session?.user?.name || " User"}
                                 {...UnknownImage}
@@ -53,33 +53,33 @@ export default function ProfilePage() {
                                 style={{ borderRadius: 15 }}
 
                             />
-                        </ProfileAvatrBox>
+                        </ProfileAvatarBox>
                     </Flex>
 
                     <Flex direction={'row'}>
                         <InputWrap
                             label={"שם מלא"}
                             value={undefined}
-                            onChangeHndler={() => { }}
+                            onChangeHandler={() => { }}
                             helpText={undefined}
-                            labelPositioin={"top"}
+                            labelPosition={"top"}
                             variant="filled"
 
                         />
                         <InputWrap
                             label={" טלפון"}
                             value={undefined}
-                            onChangeHndler={() => { }}
+                            onChangeHandler={() => { }}
                             helpText={undefined}
-                            labelPositioin={"top"}
+                            labelPosition={"top"}
                             variant="filled"
                         />
                         <InputWrap
                             label={"מיל"}
                             value={undefined}
-                            onChangeHndler={() => { }}
+                            onChangeHandler={() => { }}
                             helpText={undefined}
-                            labelPositioin={"top"}
+                            labelPosition={"top"}
                             variant="filled"
                         />
                     </Flex>

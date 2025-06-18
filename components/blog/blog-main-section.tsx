@@ -1,116 +1,103 @@
-import {  Box , Stack as Flex } from '@mui/material'
-import { p1 , p2   ,p3 , p4 , } from '@/util/constants'
-import { useContext } from 'react'
-import WidthContext from '@/context/width_context'
+import { Box, Stack as Flex, useMediaQuery, useTheme } from '@mui/material'
 import LargeCard from '@/components/cards/large_card'
-import { PostStructType } from '@/types/main'
+import { BlogPostSchemaType } from '@/types/main'
 import SmallCard from '../cards/small_card'
+import { useWindowSize  } from 'usehooks-ts'
+
+export type BlogMainSectionPropsType  = {
+  main : BlogPostSchemaType,
+  side: BlogPostSchemaType[]
+}
+
+export default function BlogMainSection({ main, side }: BlogMainSectionPropsType) {
+
+  const theme = useTheme()
+
+  const screenSize = useWindowSize()
+  const getSectionWidth = useMediaQuery(theme.breakpoints.up('md')) ? 550 : screenSize.width - 50
+  const sectionHeight = useWindowSize().height*.4
 
 
+  const MainPostBox = Box,  
+     SideBarFlexBox = Flex
 
+   return (
 
-const SidePosts :  PostStructType []  = [
-  {
-    image: p2,
-    title: 'בדיקה',
-    body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-    description: '',
-    tags: [],
-    alt: ''
-  },
-  {
-    image: p3,
-    title: 'בדיקה',
-    body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-    description: '',
-    tags: [],
-    alt: ''
-  },
-  {
-    image: p4,
-    title: 'בדיקה',
-    body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-    description: '',
-    tags: [],
-    alt: ''
-  }
-
-]
-
-
-export default function BlogMainSection () {
-
-  const {  lg  , xs } = useContext(WidthContext)
-
-  const MainPostBox =Box, 
-           SideBarFlexBox = Flex  
-
-    return (
-   <Flex 
-      direction={ !lg ? 'column' : 'row'}
+    <Flex
+     direction={ useMediaQuery(theme.breakpoints.up('md')) ? 'row' : 'column' }
       justifyContent={'center'}
       alignItems={'center'}
-        >
-      <MainPostBox
-       bgcolor={'#ddd'} 
-       height={550}
-       width={!xs?  550:  280}
-       m={1}
-       borderRadius={5}
-       p={1}
-       
-     >
+    >
 
-     <LargeCard
-        image={p1.src}
-        title={'בדיקה'}
-        body={
-          'טקסט מילוי '+
-          'טקסט מילוי טקסט מילוי טקסט מילוי ' + 
-          'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי '+
-          'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי '
-        }
+      <MainPostBox
+        bgcolor={'#ddd'}
+        height={sectionHeight}
+        width={getSectionWidth}
+        m={1}
+        borderRadius={5}
+        p={1}
+
+      >
+        <LargeCard
+          alt={''}
+          height={sectionHeight}
+          width={getSectionWidth} 
+          author={main.author} 
+          date={main.date} 
+          title={main.title}
+           selectedImage={main.selectedImage} 
+           content={main.content} 
+           tags={[]} 
+           description={main.description}
+            isMain={false}
         />
 
-    </MainPostBox>
+      </MainPostBox>
 
-      <SideBarFlexBox 
-            bgcolor={'#ddd'} 
-            height={ 550 }
-            m={1}
-            borderRadius={5}
-            p={1}
-            justifyContent={'space-around'}
-        >
-          {SidePosts.map((post) => {
-            return <SmallCard 
-              key={post.title}
-              title='כותרת'
-              description={'טקסט תיאורטקסט תיאורטקסט תיאורטקסט תיאורטקסט תיאור'}
-              alt={''} 
-              image={{
-                ...post.image,
-                width:150,  
-                height:150,
+      <SideBarFlexBox
+        bgcolor={'#ddd'}
+        m={1}
+        borderRadius={5}
+        p={1}
+        width={getSectionWidth}
+        height={sectionHeight}
+        justifyContent={'space-around'}
+      >{
+        side.map((post, index) => {
+          return (
+            <SmallCard
+             key={index+post.title}
+              alt={''}
+              imageHeight={150}
+              imageWidth={150} 
+              author={post.author} 
+              date={post.date} 
+              title={post.title}
+               selectedImage={post.selectedImage} 
+               content={post.content} 
+               tags={[]} 
+               description={post.description}
+               isMain={false}
+               WrapStyle={{
+                    justifyContent:'space-between',
+                    textAlign:"center",
+                    margin:2
               }}
-               body={''}
-               tags={[]}
-               style={{
-                background:'#fff',
-                height:170,
-                width:'inherit',
-                borderRadius:10,
-                marginTop:2,
-                gap:2,
-                
-               }}
-              />
-          })}
+              btnProps={{sx:{padding:2}}}
 
-    </SideBarFlexBox>
+            />
+          )
+        })
+      }
 
-   </Flex>
-    )
+
+
+      </SideBarFlexBox>
+    </Flex>
+
+
+  )
+
 }
 
 

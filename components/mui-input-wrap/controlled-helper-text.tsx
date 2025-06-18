@@ -1,12 +1,12 @@
 import {  SxProps, Typography, useFormControl, useTheme } from "@mui/material"
 
 
-interface ControledHelperText {
+interface ControlledHelperText {
     text:string
     helpTextPotionsEnd:boolean
 }
 
-export default function ControledHelperText ({text , helpTextPotionsEnd}:ControledHelperText){
+export default function ControlledHelperText ({text , helpTextPotionsEnd}:ControlledHelperText){
   const theme = useTheme()
   const { focused , filled, variant ,error,color } = useFormControl() || {};
 
@@ -40,7 +40,7 @@ export default function ControledHelperText ({text , helpTextPotionsEnd}:Control
     return (
         <Typography 
         // avoiding <p> in a <p> err
-        // span can be a chiled of p 
+        // span can be a childe of p 
         component={'span'}
         
         

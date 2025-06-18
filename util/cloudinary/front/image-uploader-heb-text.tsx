@@ -13,11 +13,11 @@ const  ImageUploaderHebtexts =  {
 
         "local": {
             "browse": "חיפוש",
-                 "dd_title_single": "גרור קובף לכאן",
-                 "drop_title_single": "גרור קובך לכאן כדי להעלות",
+                 "dd_title_single": "גרור תמונה לכאן",
+                 "drop_title_single": "גרור תמונה לכאן כדי להעלות",
         },
         "google_drive": {
-          "no_auth_title": "העלה קובץ מגוגל דרייב.",
+          "no_auth_title": "העלה תמונה מגוגל דרייב.",
           "no_auth_action": "התחבר דרך גוגל",
           "search": {
               "placeholder": "מחפש...",

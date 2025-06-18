@@ -1,6 +1,6 @@
-import { NewUserType } from "@/types/main";
+import { BlogPostSchemaType } from "@/types/main";
 import mongoose  from "mongoose";
-import { NewUserSchema } from "../shemas/new-user";
+import { DBBlogPostSchema } from "@/util/mongeese/schemas/db-blog-post";
 
 export const createBoundToConnectionModel = <T>(
   name: string,
@@ -16,9 +16,9 @@ export const createBoundToConnectionModel = <T>(
     
   });
 
-   // returns a connection bound to modle   
-   // avoide look up  global connections pool
-   // every coonection is created at modle  call time ] 
+   // returns a connection bound to model   
+   // avoid look up  global connections pool
+   // every connection is created at model  call time ] 
 
   return (connection: mongoose.Connection): mongoose.Model<T> => {
     if (!connection) {
@@ -29,4 +29,4 @@ export const createBoundToConnectionModel = <T>(
   
 };
 
-export const bounedBlogsModel =  createBoundToConnectionModel<NewUserType>(`${process.env.APP_BLOGS_FOLDER_PATH}`,NewUserSchema,)
+export const boundedBlogsModel =  createBoundToConnectionModel<BlogPostSchemaType>(`${process.env.APP_BLOGS_FOLDER}`,DBBlogPostSchema,)

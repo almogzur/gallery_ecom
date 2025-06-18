@@ -1,26 +1,21 @@
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useContext, useEffect, useState } from 'react';
-import width_context from '@/context/width_context';
+import { CSSProperties, useEffect, useState } from 'react';
 import LoadingFallBack from '../loading-fallback';
+import { CldImage } from 'next-cloudinary';
+import { BlogPostSchemaType } from '@/types/main';
+import { useTheme } from '@mui/material';
 
 
-export type MediaCardPropsType = {
-        image: string
-        body:string
-        title:string
-        
-}
 
-export default function LargeCard( props: MediaCardPropsType) {
+export default function LargeCard(props:BlogPostSchemaType& { ImageStyle?: CSSProperties , alt:string , height:number , width:number }) {
 
   const [isLoaded, setIsLoaded] = useState(false);  
-    const {  image, body , title} = props
-    const { xxs} = useContext(width_context)
+    const {selectedImage , title, date ,   alt ,description, ImageStyle ,  height , width ,  content} = props
+    const theme = useTheme()
 
 
 useEffect(() => {
@@ -32,17 +27,21 @@ if(!isLoaded){
 } 
 
   return (
-    <Card sx={{ height:'inherit', borderRadius:5 }}>
-      <CardMedia
-        sx={{ height: "50%" }}
-        image={image}
-        title={title}
-      />
+    <Card sx={{  height: height , borderRadius:5 }}>
+      <CldImage
+         alt={alt} 
+         src={selectedImage}
+          width={width}
+           height={height*0.6}
+           style={ImageStyle}
 
-      <CardContent >
+            />
+         
+
+      <CardContent sx={{display:"flex", flexDirection:"column"}} >
 
         <Typography 
-          variant={ xxs? "h6" :"h5"}
+          variant={ theme.breakpoints.up('sm')  ? "h6" :"h5"}
           textAlign={'justify'}
            
            sx={{ 
@@ -52,8 +51,14 @@ if(!isLoaded){
               
              }}
            >
-            {body.slice(0,120)+"..."}
+            {title}
+
         </Typography>
+
+        <Typography>{date}</Typography>
+        <Typography>     {content}</Typography>
+        <Typography variant="body2">{description}</Typography>
+        
 
       </CardContent>
 
@@ -62,7 +67,7 @@ if(!isLoaded){
           size="large"
           variant='contained'
           sx={{ mx: 'auto' }}
-          >המשך קריאה
+          >המשך...
           </Button>
       </CardActions>
     </Card>

@@ -7,7 +7,7 @@ type CloudinaryImageProps   =  & Omit<CldImageProps,"src"> &  {
   publicId:string
 };
 
-export default function CloudinaryImage(props : CloudinaryImageProps) {
+export default function CloudinaryImageWrapper(props : CloudinaryImageProps) {
 
 return (
  <CldImage

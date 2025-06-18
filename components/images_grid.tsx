@@ -5,14 +5,14 @@ import { StaticImageData } from 'next/image'
 import { CSSProperties } from 'react'
 import CoreImage from './core_image'
 
-type ImageGtidPropType = {
+type ImageGridPropType = {
   images: Array<StaticImageData>
   styles:CSSProperties
 }
 
 
 
-export default function ImagesGrid(props: ImageGtidPropType) {
+export default function ImagesGrid(props: ImageGridPropType) {
 
 
   const ColAStyle : CSSProperties ={
@@ -36,7 +36,7 @@ export default function ImagesGrid(props: ImageGtidPropType) {
   const ImageAnimation : AnimationProps = {
     animate:{
       rotate:[15,0],
-      type:"bounece",
+      type:"bounce",
       
       transition:{
         default: { type: 'spring' },

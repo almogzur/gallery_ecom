@@ -1,63 +1,27 @@
-import { useContext, useRef, useState } from 'react';
-import LoadingFallBack from './loading-fallback';
-import { ResourceApiResponse, } from 'cloudinary';
-import { Box, Stack as Flex, useTheme } from '@mui/material'
-import { ImageContext } from '@/context/user_selected_image';
-import { useRouter } from 'next/router';
-import CloudinaryImage from '@/util/cloudinary/front/cid-imag-wrapper';
-import { Size } from '@/types/main';
+import { BlogPostSchemaType } from '@/types/main';
+import { Box, Button, Stack as Flex, Typography, useTheme } from '@mui/material'
+import React, { useEffect, useState } from 'react';
 import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
-import { getAssetsCall } from '@/hooks_and_axios/fn';
-import React from 'react';
+import { CldImage } from 'next-cloudinary'
+import LoadingFallBack from '../loading-fallback';
+// home page is passing post 
+// from getServerSideProps
 
-type ImageListPropsType = {
-  children?: React.ReactNode
-}
+export default function BlogGallery({ posts }: { posts: BlogPostSchemaType[] }) {
 
-
-export default function Gallery(_props: ImageListPropsType) {
 
   const theme = useTheme()
-  const CalcShape = (imageWidth: number, imageHeight: number): Size => {
 
-    const landscape = !theme.breakpoints.up('xs') ? 300 : 500
-    const portrait = 300
-    const height = 500
-
-    if (imageWidth > imageHeight) {
-      return {
-        width: landscape,
-        height: height
-      }
-    }
-    else {
-      return {
-        width: portrait,
-        height: height
-      }
-    }
-  }
-
-  const route = useRouter()
-  const [ImgList, setImgList] = useState<ResourceApiResponse>()
-  const { setImage } = useContext(ImageContext)
+  const [isPageLoaded, setIsPageLoaded] = useState(false)
 
 
   // Scroller vars
+
   const [scrollToLeft, setScrollToLeft] = useState(0);
-  const scrollContainerRef =useRef<HTMLDivElement>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
 
-  React.useEffect(() => {
-    getAssetsCall().then((data) => {
-      //console.log(data)
-      setImgList(data)
-    })
-  }, [])
-
-  const ScrollerContent = Box
-  const ArrowsWrapper = Flex
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -89,7 +53,15 @@ export default function Gallery(_props: ImageListPropsType) {
     setIsDragging(false); // Stop dragging
   };
 
-  if (!ImgList?.resources.length) {
+
+  useEffect(() => {
+    setIsPageLoaded(true)
+  }, [isPageLoaded])
+
+  const ScrollerContent = Box,
+    ArrowsWrapper = Flex
+
+  if (!isPageLoaded) {
     return <LoadingFallBack />
   }
 
@@ -105,33 +77,28 @@ export default function Gallery(_props: ImageListPropsType) {
         flexDirection={"row"}
         gap={3}
         sx={{
+          mt: 2,
           zIndex: 1,
           overflowX: 'auto',
           cursor: isDragging ? 'grabbing' : 'grab',
           '&::-webkit-scrollbar': {},
         }}
       >
-        {ImgList.resources?.map((resource) => (
-          <Box
-            key={resource.asset_id}
-            sx={{ cursor: 'pointer' }}
-            onClick={() => {
-              if (!isDragging) {
-                setImage(resource);
-                route.push(`/${resource.asset_id}`);
-              }
-            }}
-          >
-            <CloudinaryImage
-              alt={resource.public_id}
-              loading="lazy"
-              publicId={resource.public_id}
-              width={CalcShape(resource.width, resource.height).width * 0.8}
-              height={400}
-              style={{ margin: 1, zIndex: 1100 }}
-            />
-          </Box>
-        ))}
+        {posts.reverse().map((post, i) => <Box key={i + post.date}>
+          <CldImage
+            alt={''}
+            src={post.selectedImage}
+            width={400}
+            height={300}
+          />
+          <Flex>
+            <  Typography textAlign={'center'} >{post.title} </Typography>
+            <Button>המשך</Button>
+          </Flex>
+        </Box>)}
+
+
+
       </ScrollerContent>
 
       <ArrowsWrapper
@@ -157,8 +124,6 @@ export default function Gallery(_props: ImageListPropsType) {
         />
 
       </ArrowsWrapper>
-
     </>
-  );
+  )
 }
-

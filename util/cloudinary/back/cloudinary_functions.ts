@@ -1,5 +1,5 @@
-import {  v2 as cloudinary , ResourceApiResponse  } from 'cloudinary';
-
+import { SelectItemType } from '@/components/select-wrap';
+import { v2 as cloudinary, ResourceApiResponse } from 'cloudinary';
 
 type Folder = {
   name: string;
@@ -13,109 +13,121 @@ type FolderResponse = {
   total_count: number;
 };
 
-cloudinary.config({ 
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET 
-  });
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-  
-export const createFolder = (folderName: string ): string => {
-    const sanitizedName = folderName.replace(/\s+/g, "_"); // Replace spaces with underscores
-    // console.log(`${session?.user?.name}/${sanitizedName}`);
-      return `${sanitizedName}`;
+
+export const createFolder = (folderName: string): string => {
+  const sanitizedName = folderName.replace(/\s+/g, "_"); // Replace spaces with underscores
+  // console.log(`${session?.user?.name}/${sanitizedName}`);
+  return `${sanitizedName}`;
 };
-export const moveToFolder = async (publicId:string  , eventName :string):Promise<boolean|undefined>=>{
+export const moveToFolder = async (publicId: string, eventName: string): Promise<boolean | undefined> => {
 
-        try{ 
-            const data :unknown = await 
-            cloudinary.uploader.explicit( 
-            publicId,
-          {
-            type:'upload',
-            resource_type:'image',
-            asset_folder: createFolder(eventName),
-           }
-            );
-            if(data){
-              console.log("cloudinary moveToEventNameFolder ", "succsess" ,data)
+  try {
+    const data: unknown = await
+      cloudinary.uploader.explicit(
+        publicId,
+        {
+          type: 'upload',
+          resource_type: 'image',
+          asset_folder: createFolder(eventName),
+        }
+      );
+    if (data) {
+      console.log("cloudinary moveToEventNameFolder ", "success", data)
 
-              return true
-            }
-         }
-        catch (err){
-          console.log("cloudinary moveToEventNameFolder  err" , err )
-          return false 
+      return true
+    }
+  }
+  catch (err) {
+    console.log("cloudinary moveToEventNameFolder  err", err)
+    return false
+  }
+}
+export const delFolder = async (Path: string): Promise<boolean | undefined> => {
+  try {
+    const data = await cloudinary.api.delete_folder(Path);
+    console.log("cloudinary- delFolder", "Path:", Path);
+    if (data) {
+      return true
+    }
+  }
+
+  catch (err) {
+    console.log(" cloudinary del-folder ERR", err);
+    return false
+
+  }
+
+}
+export const delEmptyFolders = async (Path?: string | null): Promise<boolean> => {
+
+  const folders = await findSubFolders(Path)
+
+  if (!folders) {
+    console.log(" delFolders Return false folders are null ")
+    return false
+  }
+  else if (Array.isArray(folders)) {
+    folders.map(
+      async (folder) => {
+        try {
+          if (folder?.path) {
+            const del_result = await delFolder(folder.path)
+            console.log(" folders.map :  del_result ", del_result, "Path ", folder.path);
           }
-        
-
-
-} 
-export const delFolder = async(Path:string):Promise<boolean|undefined>=>{
-               try{ 
-                  const  data = await cloudinary.api.delete_folder(Path);
-                  console.log("cloudinary- delFolder" ,"Path:",Path );
-                  if(data){
-                    return true
-                  }
-                  }  
-                
-               catch (err){ 
-                   console.log(  " cloudinary del-folder ERR" , err );
-                   return false
-           
-                }
-              
-} 
-export const delEmptyFolders =  async (Path?:string|null):Promise<boolean>=>{
-
-    const folders = await findSubFolders(Path)
-
-     if(!folders){
-          console.log ( " delFolders Return false folders are null " )
-        return false
-      }
-     else if(Array.isArray(folders)){
-         folders.map( 
-             async (folder)=>{
-                 try{
-                  if(folder?.path){
-                    const del_result = await delFolder(folder.path)
-                    console.log( " folders.map :  del_result ", del_result, "Path " , folder.path );
-                  }
-                   }
-                 catch (err){  
-                  console.log("cloudinary Del Error",err ) ;
-                 }
-            })
-            return true
-     }
-     else{
-        console.log (  "delEmptyFolders  :  Return false" , typeof folders ,folders,   );  
-      return false
-     }
+        }
+        catch (err) {
+          console.log("cloudinary Del Error", err);
+        }
+      })
+    return true
+  }
+  else {
+    console.log("delEmptyFolders  :  Return false", typeof folders, folders,);
+    return false
+  }
 }
-
-
-export const findSubFolders =  async(Path?:string|null) : Promise<FolderResponse|boolean> =>  {
-         try {
-                   // Fetch all subfolders under the root path
-                   const { folders } = await cloudinary.api.sub_folders(Path??"") 
-                   return folders
-             } 
-         catch (error) {
-                   console.log(`cloudinary find_result  Error:`, error);
-                   return false
-               }
+export const findSubFolders = async (Path?: string | null): Promise<FolderResponse | boolean> => {
+  try {
+    // Fetch all subfolders under the root path
+    const { folders } = await cloudinary.api.sub_folders(Path ?? "")
+    return folders
+  }
+  catch (error) {
+    console.log(`cloudinary find_result  Error:`, error);
+    return false
+  }
 }
-
-export const getAllAssets = async ( ) : Promise<undefined|ResourceApiResponse>=>{
-  try{  
-    const data : ResourceApiResponse   = await  cloudinary.api.resources({max_results:100})
+export const getAllAssets = async (Max_r?: number): Promise<undefined | ResourceApiResponse> => {
+  try {
+    const data: ResourceApiResponse = await cloudinary.api.resources({ max_results: Max_r ?? 200 })
     return data
   }
-  catch ( err ){ 
+  catch (err) {
     console.log(err, ' getAllAssets ')
     return undefined
-   }
+  }
 }
+export const getAllAssetsSelectComponent = async (): Promise<SelectItemType[] | undefined> => {
+
+  try {
+    const data: ResourceApiResponse = await cloudinary.api.resources({ max_results: 200 })
+
+    const assets = data.resources.map((asset) => ({
+      label: asset.public_id,
+      value: asset.public_id,
+    }))
+    return assets
+
+  }
+  catch (err) {
+    console.log(JSON.stringify(err))
+    return undefined
+  }
+}
+

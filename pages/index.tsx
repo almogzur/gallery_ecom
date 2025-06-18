@@ -1,20 +1,62 @@
 
 import NavWrapper from "@/components/navigation/nav_wrap";
 import Head from "next/head";
-import AutoComplite from '@/components/auto-complite-input-wrap'
+import AutoComplete from '@/components/auto-complete-input-wrap'
 import { grey } from "@mui/material/colors";
 import { useState } from "react";
 import { p1 as Cover } from "@/util/constants";
 import { Stack as Flex } from '@mui/material'
-import MainCategoryBar from "@/components/main_category_bar";
-import Gallery from "@/components/gallery";
-import BlogGallary from "@/components/blog/blog-gallary";
+import BlogGallery from "@/components/blog/blog-gallery";
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import { getAssetsCall, getPostCall } from "@/hooks_and_axios/fn";
+import { ResourceApiResponse } from "cloudinary";
+import { organizeBlogPosts } from "./_app";
+import { BlogStateType } from "./blog";
 
-export default function Home() {
+
+// get BlogPost and cloudinary images 
+
+
+export const getServerSideProps = (async (_context) => {
+  const assets = await getAssetsCall();
+  const RowPosts = await getPostCall();
+
+  if (!RowPosts) {
+    return {
+      props: {
+        posts: null,
+        assets
+      }
+    }
+
+  }
+
+  const posts = organizeBlogPosts(RowPosts)
+
+  return {
+    props: {
+      posts,
+      assets,
+    },
+  };
+}) satisfies GetServerSideProps<{
+  posts: BlogStateType | null;
+  assets: ResourceApiResponse | undefined;
+}>;
+
+
+export default function Home({
+  posts,
+  assets
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   const [userInput, setUserInput] = useState<string>('')
 
   const FlexSectionWrapper = Flex
+
+  if (!posts || !assets) {
+    return <h1>no Data</h1>
+  }
 
   return (
     <>
@@ -38,7 +80,7 @@ export default function Home() {
             backgroundPosition: 'bottom',
           }}>
 
-        <NavWrapper
+          <NavWrapper
             App_Bars_Styles={{
               position: 'absolute',
               justifySelf: "top",
@@ -48,12 +90,12 @@ export default function Home() {
             }}
 
           />
-          <AutoComplite
+          <AutoComplete
             label={"חיפוש"}
             value={userInput}
-            onChangeHndler={(e) => { setUserInput(e.target.value) }}
+            onChangeHandler={(e) => { setUserInput(e.target.value) }}
             helpText={undefined}
-            labelPositioin={"end"}
+            labelPosition={"end"}
             variant="outlined"
             bg={grey[200]}
             AutocompleteOptionArray={[]}
@@ -63,7 +105,7 @@ export default function Home() {
               minWidth: 260,
               justifySelf: 'center',
             }}
-            controledLabelSxcProps={{
+            controlledLabelSxcProps={{
               fontFamily: 'monospace'
             }}
           />
@@ -73,14 +115,9 @@ export default function Home() {
       </Flex>
 
 
-      <MainCategoryBar>
+      <BlogGallery posts={[posts.main, ...posts.restPosts ,...posts.side]} />
 
-      </MainCategoryBar>
 
-      <Gallery />
-
-      <BlogGallary/>
-      
     </>
   )
 }

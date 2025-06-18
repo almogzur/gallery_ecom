@@ -2,7 +2,7 @@ import NextAuth, { } from "next-auth"
 import { AuthOptions } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
-import MongoClient from '@/util/mongo/adpter_promiss-client'
+import MongoClient from '@/util/mongo/adapter_promise'
 import { Adapter } from "next-auth/adapters"
 import {z} from 'zod'
 
@@ -11,11 +11,11 @@ import {z} from 'zod'
  * use on password validate 
  *   const authKeyBuffer = encoder.encode(user,pass);
      const inputKeyBuffer = encoder.encode(input.pass); 
-     const isKeyValide = crypto.timingSafeEqual(new Uint8Array(authKeyBuffer), new Uint8Array(inputKeyBuffer))
+     const isKeyValid = crypto.timingSafeEqual(new Uint8Array(authKeyBuffer), new Uint8Array(inputKeyBuffer))
  */
 
-// Exdenting the type using -  module Augmentation
-// to enclude extra filde in the session || && the User we need to add the fild to the type struc 
+// Extending  the type using -  module Augmentation
+// to include extra filed in the session || && the User we need to add the filed to the type struct 
 declare module "next-auth" {
 
   interface User {
@@ -27,7 +27,6 @@ declare module "next-auth" {
   }
 }
 // validate input  values  at run time 
-
 
 
 
@@ -52,7 +51,7 @@ export const authOptions: AuthOptions = {
           pass: process.env.EMAIL_SERVER_PASSWORD
         },
       },
-      from: 'Ecommerce <no-reply@ecommerce.com>',
+      from: 'E_Commerce <no-reply@ecommerce.com>',
       maxAge: 60 * 60 * 24,
 
     }),
@@ -66,9 +65,9 @@ export const authOptions: AuthOptions = {
 
     async signIn({ user, ..._rest }) {
 
-      const isValiedEmail = z.string().email().safeParse(user.email)
+      const isValidEmail = z.string().email().safeParse(user.email)
 
-      if (!isValiedEmail.success) {
+      if (!isValidEmail.success) {
         return false
       }
 
@@ -76,8 +75,8 @@ export const authOptions: AuthOptions = {
 
       const { getUserByEmail } = dbAdapter
 
-      // using the Adpter Driver getUserByEmail expose fn
-      // the return type from can be undefined so null chack 
+      // using the Adapter Driver getUserByEmail expose fn
+      // the return type from can be undefined so null check 
 
       if (!getUserByEmail) {
         return false
@@ -98,14 +97,12 @@ export const authOptions: AuthOptions = {
     //The redirect callback is called anytime 
     // the user is redirected to a callback URL (e.g. on signin or signout).
     //By default only URLs on the same URL as the site are allowed
-    // , you can use the redirect callback to customise that behaviour.
+    // , you can use the redirect callback to customize that behaviors.
     //The default redirect callback looks like this:
 
     // async redirect({ baseUrl }) {
     //   return `${baseUrl}`; // Redirect after login
     // },
-
-
 
 
     // async jwt({ token, user, account, profile, }) {
@@ -125,13 +122,13 @@ export const authOptions: AuthOptions = {
     // //  the Session Validate On JWT Token 
 
 
-    async session({ session, token, user }) {
+    async session({ session, user, ..._rest}) {
 
-      // user aeg is the return quray from db 
+      // user aeg is the return query from db 
 
       // session object is exposed to front end 
 
-      console.log(user, 'user _ session', "token", token, session, "session")
+    //  console.log(user, 'user _ session', "token", token, session, "session")
       /*
            If you want to make something available you added to 
           the token (like access_token and user.id from above) via the jwt() callback,

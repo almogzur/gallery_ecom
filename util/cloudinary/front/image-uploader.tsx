@@ -1,9 +1,6 @@
  import {  CldUploadWidget } from 'next-cloudinary';
  import ImageUploaderHebtexts from '@/util/cloudinary/front/image-uploader-heb-text'
-import {  Button, useTheme } from '@mui/material';
-import { grey } from '@mui/material/colors';
-
-import { MdOutlineAddAPhoto } from "react-icons/md";
+import {   Button, useTheme } from '@mui/material';
 
 
 export default function ImageUploader() {
@@ -14,10 +11,11 @@ export default function ImageUploader() {
 
 return (
      <CldUploadWidget     
-               uploadPreset="fx9hpz2j"
+               uploadPreset="E-commerce"
                onClose={(_statues,_widgt)=>{ }}
                onQueuesStart={(e)=>{console.log("q start", e.event , e.info );}} // event &&  strings are strings 
                onQueuesEnd={(_result)=>{}}
+               
                options={{      
                 singleUploadAutoClose:true,
                 
@@ -28,8 +26,7 @@ return (
                  multiple:false,
                  showPoweredBy:false,
                  showUploadMoreButton:false,
-                 showAdvancedOptions:false,
-                 
+                 showAdvancedOptions:false,  
                  text:{...ImageUploaderHebtexts},
                  styles:{
                      palette: {
@@ -50,10 +47,20 @@ return (
                 }}
                >
                {({ open }) => {
-                 return  <MdOutlineAddAPhoto 
-                 size={"2em"}
+                 return  <Button
+                 sx={{p:0, m:0}}
+                style={{         
+                  textDecoration: 'none',
+                   color: 'black',
+                   fontWeight:'bold' ,
+                    fontSize: '1em',
+
+                   }}
+                 
                  onClick={() => {  open() }} 
-                 />
+                 >
+                  העלה תמונה 
+                 </Button> 
               
                }}
      </CldUploadWidget>        

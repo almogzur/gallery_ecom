@@ -1,12 +1,7 @@
 import {z} from 'zod'
 import { ResourceApiResponse } from "cloudinary"
-import { NewUserValidationShema, ValidateNewPost } from './zod_main'
-import { StaticImageData } from 'next/image'
+import {  ZODBlogPostSchema,  ZodGetAllAssets, ZodGetAllPosts, ZODNewUserValidationSchema } from './zod_main'
 
-
-
-
-export const getAllassetsZVS = z.object({})
 
 
 export type ImagePropsType = ResourceApiResponse["resources"][0]
@@ -27,21 +22,12 @@ export type ImageSizesType = {
   portrait: OrientationSizes
 }
 
-export type GetAllAssestsReqType = z.infer< typeof getAllassetsZVS>
+export type GetAllAssessReqType = z.infer< typeof ZodGetAllAssets>
 
-export type NewUserType = z.infer<typeof NewUserValidationShema>
+export type GetAllPostsReqType = z.infer< typeof ZodGetAllPosts>
 
-export type NewPostType = z.infer<typeof ValidateNewPost>
+export type NewUserType = z.infer<typeof ZODNewUserValidationSchema>
 
-export type PostStructType = {
-  image: {
-    src:string
-    width:number
-    height:number
-  }
-  title:string
-  body:string
-  description:string
-  tags:string[]
-  alt:string
-}
+export type BlogPostSchemaType = z.infer<typeof ZODBlogPostSchema>
+
+

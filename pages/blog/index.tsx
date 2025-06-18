@@ -1,96 +1,101 @@
 import BlogMainSection from "@/components/blog/blog-main-section"
 import SmallCard from "@/components/cards/small_card"
 import NavWrapper from "@/components/navigation/nav_wrap"
-import { PostStructType } from "@/types/main"
-import { p2, p3, p4, p5 } from "@/util/constants"
-import { Stack as Flex } from '@mui/material'
+import { getPostCall } from "@/hooks_and_axios/fn"
+import { BlogPostSchemaType } from "@/types/main"
+import { Container, Stack as Flex } from '@mui/material'
 import { grey } from "@mui/material/colors"
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import { organizeBlogPosts } from '@/pages/_app'
+
+
+
+export const getServerSideProps = (
+    async (_context) => {
+        const RowPosts = await getPostCall()
+
+        if (!RowPosts) {
+            return {
+                props: {
+                    posts: null,
+                }
+            }
+        }
+
+        const post = organizeBlogPosts(RowPosts)
+
+        return {
+            props: {
+                posts: post,
+            }
+        }
+
+
+    }) satisfies GetServerSideProps<{
+        posts: BlogStateType | null
+    }>
 
 
 
 
-const SubPosts: PostStructType[] = [
-    {
-        image: p2,
-        title: 'בדיקה',
-        body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-        description: '',
-        tags: [],
-        alt: ''
-    },
-    {
-        image: p3,
-        title: 'בדיקה',
-        body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-        description: '',
-        tags: [],
-        alt: ''
-    },
-    {
-        image: p4,
-        title: 'בדיקה',
-        body: 'טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי טקסט מילוי',
-        description: '',
-        tags: [],
-        alt: ''
-    },
-    {
-        image: p5,
-        title: 'בדיקה',
-        body: 'טקסט מילויטקסט מילויטקסט מילויטקסט מילויטקסט מילויטקסט מילויטקסט מילויטקסט מילוי',
-        description: "",
-        tags: [],
-        alt: ""
-    }
-
-]
+export type BlogStateType = {
+    main: BlogPostSchemaType,
+    side: BlogPostSchemaType[],
+    restPosts: BlogPostSchemaType[]
+}
 
 
-export default function BlogPage() {
+export default function BlogPage({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     const PostLoopFlex = Flex
 
+
+    if (!posts) {
+        return <h1>no posts</h1>
+    }
 
     return (
         <>
             <NavWrapper
                 App_Bars_Styles={{ position: 'unset' }}
             />
+            <Container>
+                <BlogMainSection
+                    side={posts.side}
+                    main={posts.main}
 
-            <BlogMainSection />
+                />
 
-            <PostLoopFlex
-                height={500}
-                width={'100%'}
-        
-            >
-                {SubPosts.map((post, index) => (
-                    <SmallCard
+                <PostLoopFlex
+                    overflow={'clip'}
                     
-                        key={index}
-                        image={{
-                            src: post.image.src,
-                            width: 100,
-                            height: 100
-                        }}
-                        title={"קונדימנטום קורוס בליקרה " + 
-                             "נונסטי, נונסטי קלובר בריקנה סטום, לפריקך תצטריק לרטי."
-                        }
-                        body={ "נונסטי, נונסטי קלובר בריקנה סטום, לפריקך תצטריק לרטי."    +   "נונסטי, נונסטי קלובר בריקנה סטום, לפריקך תצטריק לרטי."}
-                        description={""}
-                        tags={[]}
-                        alt={""} 
-                        style={{
-                            backgroundColor: grey[300],
-                            margin: 10,
-                            padding:10
-                        }}
-                        />
-                ))}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                >
+                    {posts.restPosts.map((post, index) => (
+                        <SmallCard
+                            alt={""} key={index}
+                            {...post}
+                            imageHeight={200}
+                            imageWidth={200}
+                            WrapStyle={{
+                                backgroundColor: grey[300],
+                                margin: 10,
+                                padding: 10,
+                                width: "80%",
+                               justifyContent:"space-between",
+                                
+                            }}
+                            btnProps={{
+                                sx:{ml:2}
+                            }}
+                             />
+                    ))}
 
 
-            </PostLoopFlex>
-
+                </PostLoopFlex>
+            </Container>
         </>
     )
+
 }
